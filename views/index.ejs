@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETD Pre-processing Pipeline</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+  <h1><a href="/">Welcome To The Zambia National ETD Pre-Processing Pipeline Portal</a></h1>
+
+  <!-- Search form -->
+  <form method="post" action="/search">
+    <input type="text" name="search" id="search" placeholder="Enter your search term">
+    <button type="submit">Search</button>
+  </form>
+
+  <ul>
+    <% data.forEach(function(record) { %>
+      <li>
+	<!-- <span><strong>ID:</strong> <%= record.id %></span>-->
+	<span class="title"><strong>Title:</strong> <%= record.title %></span>
+	<span><strong>Creator:</strong> <%= record.creator %></span>
+	<span><strong>Description:</strong> <%= record.description.substring(0, 300) %>...</span>
+	<span><strong>Publisher:</strong> <%= record.publisher %></span>
+
+         <!-- Preprocess button for each record -->
+	 <a href="/"><button class="preprocess-btn" data-record-id="<%= record.id %>">PREPROCESS</button></a>
+      </li>
+    <% }); %>
+  </ul>
+
+  <script>
+  const preprocessButtons = document.querySelectorAll('.preprocess-btn');
+
+  preprocessButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const recordId = button.getAttribute('data-record-id');
+      // Send an AJAX request to trigger the preprocessing for the specific record
+      fetch(`/preprocess/${recordId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Update the displayed data
+          const record = data[0];
+          const listItem = button.parentElement;
+          listItem.querySelector("strong.Title").innerText = record.title;
+          listItem.querySelector("strong.Creator").innerText = record.creator;
+          listItem.querySelector("strong.Publisher").innerText = record.publisher;
+        })
+        .catch(error => {
+          console.error('Error preprocessing data:', error);
+        });
+    });
+  });
+</script>
+</body>
+</html>
