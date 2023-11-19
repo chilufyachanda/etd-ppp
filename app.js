@@ -81,7 +81,7 @@ app.get('/preprocess/:id', (req, res) => {
     const record = results[0];
 
     // Perform the preprocessing
-    const preprocessedTitle = record.title.toLowerCase();
+    // const preprocessedTitle = record.title.toLowerCase();
     const preprocessedCreator = record.creator.replace(',', ''); // Remove comma
     const preprocessedPublisher = 'The University of Zambia';
 
